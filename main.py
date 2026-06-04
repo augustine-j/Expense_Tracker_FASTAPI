@@ -1,24 +1,31 @@
-from fastapi import FastAPI, Depends, HTTPException, status
-from datetime import datetime,timedelta,timezone
-from typing import Optional
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel, Field
-from jose import jwt, JWTError
-from passlib.context import CryptContext
-from contextlib import asynccontextmanager
-from database import init_db, get_user, create_user
+from typing import Annotated, List
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    init_db()
-    yield
+import uvicorn
+from fastapi import Depends, FastAPI, HTTPException, status
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+import models
+from auth import get_current_user, router
+from database import SessionLocal, engine
+from dependency import db_dependency as db_dependency
+
+from categories import router as categories_router
+from expenses import router as expenses_router
 
 
-app= FastAPI(title="JWT Auth", lifespan=lifespan)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")       # token comes from/login
+app = FastAPI()
+app.include_router(router)
+app.include_router(categories_router)
+app.include_router(expenses_router)
 
-@app.get("/")
+models.Base.metadata.create_all(bind=engine)
+user_dependency = Annotated[dict, Depends(get_current_user)]
 
-def root():
-    return {"message":"Hello World"}
+
+@app.get("/",status_code=status.HTTP_200_OK)
+async def user(user: user_dependency, db: db_dependency):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+    return {"User": user}
+
