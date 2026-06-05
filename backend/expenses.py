@@ -4,9 +4,11 @@ from starlette import status
 
 from dependency import db_dependency
 from models import Expenses,Categories
-from datetime import datetime
+from datetime import datetime, timedelta,date
+from dateutil.relativedelta import relativedelta
 from typing import Annotated
 from auth import get_current_user
+
 
 user_dependency  = Annotated[dict,Depends(get_current_user)]
 
@@ -52,11 +54,46 @@ async def create_expense(
 
 
 @router.get("/",status_code=status.HTTP_200_OK)
-async def get_expenses( user: user_dependency, db: db_dependency):
+async def get_expenses( user: user_dependency, 
+                       db: db_dependency,
+                       filter: str | None =None,
+                       start_date: date | None= None,
+                       end_date: date | None =None):
+    user_id= user.get("id")
+    now = datetime.now()
+
+    filter_map = {
+        "pastweek":now -relativedelta(weeks=1),
+        "past_month":now -relativedelta(months=1),
+        "3_month":now -relativedelta(months=3),
+    }
+
+    query = db.query(Expenses).filter(Expenses.user_id == user_id)
+
+    if filter and (start_date or end_date):
+        raise HTTPException(status_code=400, detail="Use either filter or date range, not both")
     
-    return(
-        db.query(Expenses).filter(Expenses.user_id == user.get("id")).all()
-    )
+
+    if filter in filter_map:
+      
+        query = query.filter(Expenses.date >= filter_map[filter])
+
+    elif filter:
+        raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Invalid filter"
+        )
+
+    elif start_date or end_date:
+        if start_date:
+             query = query.filter(Expenses.date >= start_date)
+        if end_date:
+           query = query.filter(Expenses.date <= end_date)
+
+    
+    return query.order_by(Expenses.date.desc()).all()
+
+
     
 @router.get("/{expense_id}",status_code=status.HTTP_200_OK)
 def read_expense(user:user_dependency,db:db_dependency,expense_id:int):
