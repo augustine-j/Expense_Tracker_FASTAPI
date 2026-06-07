@@ -1,4 +1,18 @@
+# Environment
 .env
+.venv/
+venv/
+backend/.venv/
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Editor
 .vscode/
+
+# Frontend dependencies/build output
+node_modules/
+dist/
+build/
