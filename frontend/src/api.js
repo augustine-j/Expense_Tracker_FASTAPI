@@ -22,9 +22,11 @@ export async function signUp(username,password) {
             username,
             password,
         });
+
+        return response.data
     }
     catch (error) { 
-        alert.error("Error signing up:",error);
+        console.error("Error signing up:", error);
         throw error;
     }
 
@@ -38,7 +40,7 @@ export async function login(username,password){
     formData.append("password",password);
 
     try{
-        const response = await api.post("/auth/token/",formData);
+        const response = await api.post("/auth/token",formData);
         return response.data;
     }
     catch (error){

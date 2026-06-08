@@ -2,6 +2,7 @@ import {BrowserRouter , Routes,Route,Navigate} from "react-router-dom";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import DashBoard from "./components/DashBoard";
+import GuestPage from "./components/GuestPage";
 
 function App(){
   return(
