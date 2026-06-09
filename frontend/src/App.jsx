@@ -1,8 +1,8 @@
 import {BrowserRouter , Routes,Route,Navigate} from "react-router-dom";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
-import DashBoard from "./components/DashBoard";
-import GuestPage from "./components/GuestPage";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import DashBoard from "./pages/DashBoard";
+import GuestPage from "./pages/GuestPage";
 
 function App(){
   return(
