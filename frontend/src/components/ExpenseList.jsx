@@ -1,66 +1,67 @@
-import { useEffect, useState } from "react";
-import { getExpenses } from "../api";
-import ExpenseItem from "./ExpenseItem";
+import { motion } from "framer-motion";
+import { PlusCircle } from "lucide-react";
+import ExpenseCard from "./ExpenseCard";
 
-export default function ExpenseList() {
-  const [expenses, setExpenses] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadExpenses();
-  }, []);
-
-  const loadExpenses = async () => {
-    try {
-      const data = await getExpenses();
-      setExpenses(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="card">
-        <p>Loading expenses...</p>
-      </div>
-    );
-  }
+export default function ExpenseList({ expenses = [], onAdd, onEdit, onDelete, error }) {
+  const total = expenses.reduce((sum, e) => sum + e.expense_amount, 0);
+  const avg = expenses.length ? Math.round(total / expenses.length) : 0;
 
   return (
-    <div className="card">
-      <div className="card-title">
-        All Expenses
+    <div className="body">
+      <div className="topbar">
+        <div className="logo">
+          <span className="logo-dot">E</span>
+          Expense Tracker
+        </div>
+        <button className="add-btn" type="button" onClick={onAdd}>
+          <PlusCircle size={16} /> Add expense
+        </button>
       </div>
 
-      {expenses.length === 0 ? (
-        <p>No expenses found.</p>
-      ) : (
-        expenses.map((expenses) => (
-          <ExpenseItem
-            key={expenses.id}
-            expenses={expenses}
-          />
-        ))
-      )}
+      <div className="stat-grid">
+        <div className="stat">
+          <div className="stat-label">Total spent</div>
+          <div className="stat-val">₹{total.toLocaleString("en-IN")}</div>
+          <div className="stat-sub">All expenses</div>
+        </div>
+        <div className="stat">
+          <div className="stat-label">Transactions</div>
+          <div className="stat-val">{expenses.length}</div>
+          <div className="stat-sub">Expense entries</div>
+        </div>
+        <div className="stat">
+          <div className="stat-label">Average</div>
+          <div className="stat-val">₹{avg.toLocaleString("en-IN")}</div>
+          <div className="stat-sub">Per transaction</div>
+        </div>
+      </div>
 
-      <div className="tfoot">
-        <span>
-          Showing {expenses.length} expenses
-        </span>
+      <div className="card">
+        <div className="card-title">Your expenses ({expenses.length})</div>
 
-        <span>
-          ₹
-          {expenses
-            .reduce(
-              (sum, expense) =>
-                sum + expense.expense_amount,
-              0
-            )
-            .toLocaleString()}
-        </span>
+        {error ? (
+          <div className="error-message">{error}</div>
+        ) : expenses.length === 0 ? (
+          <div className="empty-message">No expenses yet. Add one to get started.</div>
+        ) : (
+          <div className="expense-grid">
+            {expenses.map((expense, index) => (
+              <motion.div
+                key={expense.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: index * 0.05 }}
+              >
+                <ExpenseCard
+                  expense={expense}
+                  maxAmount={Math.max(...expenses.map((e) => e.expense_amount))}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                />
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

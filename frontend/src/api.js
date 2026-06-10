@@ -73,7 +73,7 @@ export async function createExpense(expense){
 
 export async function updateExpense(expenseId, expense){
     try{
-        const response = await api.put(`/expenses/${expense_id}`,expense);
+        const response = await api.put(`/expenses/${expenseId}`,expense);
         return response.data;
     }
 

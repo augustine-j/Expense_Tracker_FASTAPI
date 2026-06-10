@@ -26,7 +26,7 @@ export default function ExpenseItem({ expenses }) {
         </div>
 
         <div className="exp-meta">
-          {expenses.category_id?.category_name} •{" "}
+          {expenses.category_id.category_name} •{" "}
           {new Date(expenses.date).toLocaleDateString()}
         </div>
       </div>
