@@ -220,3 +220,166 @@ body { font-family: var(--font-sans); }
 .ri-title { font-size: 13px; color: var(--color-text-primary); }
 .ri-date { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1px; }
 .ri-amt { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.65);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 999;
+}
+
+.modal-content {
+  width: 500px;
+  max-width: 90vw;
+
+  background: #111827;
+
+  border-radius: 20px;
+
+  padding: 24px;
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.5);
+}
+
+
+.expense-form-container {
+  width: 100%;
+}
+
+.expense-form-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: white;
+}
+
+.expense-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+
+  background: rgba(255,255,255,.04);
+  color: white;
+
+  outline: none;
+
+  transition: all .2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #1D9E75;
+
+  box-shadow:
+    0 0 0 3px rgba(29,158,117,.15);
+}
+
+.form-group textarea {
+  resize: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.cancel-btn {
+  padding: 10px 18px;
+
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.12);
+
+  color: white;
+
+  border-radius: 12px;
+}
+
+.submit-btn {
+  padding: 10px 18px;
+
+  background: #1D9E75;
+  border: none;
+
+  color: white;
+  font-weight: 600;
+
+  border-radius: 12px;
+}
+
+.submit-btn:hover {
+  background: #178663;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+
+  background: #1f2937;
+  color: white;
+
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+
+  appearance: none;
+  cursor: pointer;
+}
+
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 8px 14px;
+
+  background: #dc2626;
+  color: white;
+
+  border: none;
+  border-radius: 12px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.logout-btn:hover {
+  background: #b91c1c;
+}

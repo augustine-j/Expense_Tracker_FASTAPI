@@ -60,6 +60,18 @@ export async function getExpenses(){
     }
 }
 
+
+export async function getCategories(){
+    try{
+        const response = await api.get("/categories/");
+        return response.data;
+    }
+    catch (error){
+        alert("Failed to fetch categories!",error);
+        throw error;
+    }
+}
+
 export async function createExpense(expense){
     try{
         const response = await api.post("/expenses/",expense);

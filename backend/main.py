@@ -21,11 +21,10 @@ app.include_router(categories_router)
 app.include_router(expenses_router)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "http://localhost:5174"],
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=True,
-
 )
 
 models.Base.metadata.create_all(bind=engine)

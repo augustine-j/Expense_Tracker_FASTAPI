@@ -2,6 +2,7 @@
 import ExpenseList from "../components/ExpenseList";
 import { getExpenses } from "../api";
 import "../styles/dashboard.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const [expenses, setExpenses] = useState([]);
@@ -19,6 +20,16 @@ export default function Dashboard() {
     }
     loadExpenses();
   }, []);
+
+
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        navigate("/login");
+    }
+}, []);
 
   function handleEdit(expense) {
     console.log("edit", expense);

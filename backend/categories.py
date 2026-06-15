@@ -26,3 +26,9 @@ async def create_category(db: db_dependency,create_category_request: CreateCateg
 
     return {"message": "Category created successfully"}
 
+
+@router.get("/",status_code=status.HTTP_200_OK)
+
+def get_category(db:db_dependency):
+    query = db.query(Categories).all()
+    return query
