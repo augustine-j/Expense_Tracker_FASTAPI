@@ -1,26 +1,4 @@
-// src/components/ui/ExpenseCard.jsx
-import { Pencil, Trash2, Utensils, Car, HeartPulse, Smartphone, Zap, ShoppingBag, Plane, GraduationCap, HelpCircle } from "lucide-react";
-
-const CATEGORY_MAP = {
-  1: { label: "Food & Drink", icon: <Utensils size={16} />, color: "#1D9E75" },
-  2: { label: "Transport", icon: <Car size={16} />, color: "#378ADD" },
-  3: { label: "Health", icon: <HeartPulse size={16} />, color: "#E24B4A" },
-  4: { label: "Electronics", icon: <Smartphone size={16} />, color: "#8B5CF6" },
-  5: { label: "Utilities", icon: <Zap size={16} />, color: "#F59E0B" },
-  6: { label: "Shopping", icon: <ShoppingBag size={16} />, color: "#DB2777" },
-  7: { label: "Travel", icon: <Plane size={16} />, color: "#38BDF8" },
-  12: { label: "Education", icon: <GraduationCap size={16} />, color: "#F97316" },
-};
-
-const DEFAULT_CATEGORY = {
-  label: "Other",
-  icon: <HelpCircle size={16} />,
-  color: "#64748B",
-};
-
-function getCategory(id) {
-  return CATEGORY_MAP[id] ?? DEFAULT_CATEGORY;
-}
+import { Pencil, Trash2, Utensils, Car, HeartPulse, Smartphone, Zap, ShoppingBag, Plane, GraduationCap, HelpCircle, Tag } from "lucide-react";
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString("en-IN", {
@@ -30,21 +8,33 @@ function formatDate(dateStr) {
   });
 }
 
+function getCategoryIcon(categoryName) {
+  const name = categoryName?.toLowerCase() || "";
+  if (name.includes("food") || name.includes("dining")) return <Utensils size={20} />;
+  if (name.includes("transport") || name.includes("car")) return <Car size={20} />;
+  if (name.includes("health") || name.includes("medical")) return <HeartPulse size={20} />;
+  if (name.includes("phone") || name.includes("mobile")) return <Smartphone size={20} />;
+  if (name.includes("utility") || name.includes("bills")) return <Zap size={20} />;
+  if (name.includes("shopping")) return <ShoppingBag size={20} />;
+  if (name.includes("travel")) return <Plane size={20} />;
+  if (name.includes("education")) return <GraduationCap size={20} />;
+  return <Tag size={20} />;
+}
+
 export default function ExpenseCard({ expense, maxAmount, onEdit, onDelete }) {
-  const category = getCategory(expense.category_id);
   const max = maxAmount ?? expense.expense_amount;
-  const barPercent = Math.min((expense.expense_amount / max) * 100, 100);
+  const barPercent = Math.min((expense.expense_amount / (max || 1)) * 100, 100);
 
   return (
     <div className="expense-card">
       <div className="expense-card-top">
         <div className="expense-card-meta">
-          <div className="expense-card-icon" style={{ background: category.color + "22", color: category.color }}>
-            {category.icon}
+          <div className="expense-card-icon">
+            {getCategoryIcon(expense.category_name)}
           </div>
           <div className="expense-card-details">
             <div className="expense-card-title">{expense.expense_name}</div>
-            <div className="expense-card-subtitle">{category.label}</div>
+            <div className="expense-card-subtitle">{expense.category_name}</div>
           </div>
         </div>
         <div className="expense-card-amount">₹{expense.expense_amount.toLocaleString("en-IN")}</div>
@@ -55,10 +45,13 @@ export default function ExpenseCard({ expense, maxAmount, onEdit, onDelete }) {
       )}
 
       <div className="expense-card-progress-group">
-        <div className="expense-card-progress-bar">
-          <div className="expense-card-progress-fill" style={{ width: `${barPercent}%`, background: category.color }} />
+        <div className="expense-card-progress-label">
+          <span>% of max spent</span>
+          <span>{Math.round(barPercent)}%</span>
         </div>
-        <div className="expense-card-progress-label">{expense.expense_amount.toLocaleString("en-IN")}</div>
+        <div className="expense-card-progress-bar">
+          <div className="expense-card-progress-fill" style={{ width: `${barPercent}%` }}></div>
+        </div>
       </div>
 
       <div className="expense-card-footer">

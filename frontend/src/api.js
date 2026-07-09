@@ -83,9 +83,9 @@ export async function createExpense(expense){
     }
 }
 
-export async function updateExpense(expenseId, expense){
+export async function updateExpense(expenseId, expenseData){
     try{
-        const response = await api.put(`/expenses/${expenseId}`,expense);
+        const response = await api.put(`/expenses/${expenseId}`,expenseData);
         return response.data;
     }
 
@@ -102,7 +102,7 @@ export async function deleteExpense(expenseId){
         return response.data;
     }
     catch (error){
-        alert("Failed to delete expense",error)
+        alert("Failed to delete expense: " + error.message)
         throw error;
     }
 }

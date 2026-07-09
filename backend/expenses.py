@@ -68,7 +68,7 @@ async def get_expenses( user: user_dependency,
         "3_month":now -relativedelta(months=3),
     }
 
-    query = db.query(Expenses).filter(Expenses.user_id == user_id)
+    query = db.query(Expenses, Categories.category_name).join(Categories, Expenses.category_id == Categories.id).filter(Expenses.user_id == user_id)
 
     if filter and (start_date or end_date):
         raise HTTPException(status_code=400, detail="Use either filter or date range, not both")
@@ -91,24 +91,53 @@ async def get_expenses( user: user_dependency,
            query = query.filter(Expenses.date <= end_date)
 
     
-    return query.order_by(Expenses.date.desc()).all()
+    expenses_data = query.order_by(Expenses.date.desc()).all()
+    
+    result = []
+    for expense, category_name in expenses_data:
+        result.append({
+            "id": expense.id,
+            "user_id": expense.user_id,
+            "category_id": expense.category_id,
+            "expense_name": expense.expense_name,
+            "expense_amount": expense.expense_amount,
+            "description": expense.description,
+            "date": expense.date,
+            "created_at": expense.created_at,
+            "category_name": category_name
+        })
+    return result
 
 
     
 @router.get("/{expense_id}",status_code=status.HTTP_200_OK)
 def read_expense(user:user_dependency,db:db_dependency,expense_id:int):
 
-    expense = (db.query(Expenses).filter(Expenses.id == expense_id).
-               filter(Expenses.user_id == user.get("id")).first())
+    result = (db.query(Expenses, Categories.category_name)
+               .join(Categories, Expenses.category_id == Categories.id)
+               .filter(Expenses.id == expense_id)
+               .filter(Expenses.user_id == user.get("id")).first())
     
 
-    if expense is None:
+    if result is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Expense not found"
         )
     
-    return expense
+    expense, category_name = result
+    
+    return {
+        "id": expense.id,
+        "user_id": expense.user_id,
+        "category_id": expense.category_id,
+        "expense_name": expense.expense_name,
+        "expense_amount": expense.expense_amount,
+        "description": expense.description,
+        "date": expense.date,
+        "created_at": expense.created_at,
+        "category_name": category_name
+    }
 
 
 

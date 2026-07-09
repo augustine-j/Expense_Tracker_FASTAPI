@@ -18,7 +18,7 @@ const navigate = useNavigate();
 function handleLogout() {
     localStorage.removeItem("token");
 
-    navigate("/login");
+    navigate("/login", { replace: true });
 }
 
 
@@ -30,22 +30,24 @@ function handleLogout() {
     Expense Tracker
   </div>
 
-  <button
-    className="add-btn"
-    type="button"
-    onClick={() => setShowForm(true)}
-  >
-    <PlusCircle size={16} />
-    Add Expense
-  </button>
+  <div className="topbar-actions">
+    <button
+      className="add-btn"
+      type="button"
+      onClick={() => setShowForm(true)}
+    >
+      <PlusCircle size={16} />
+      Add Expense
+    </button>
 
-  <button
-    className="logout-btn"
-    onClick={handleLogout}
->
-    <LogOut size={16} />
-    Logout
-</button>
+    <button
+      className="logout-btn"
+      onClick={handleLogout}
+    >
+      <LogOut size={16} />
+      Logout
+    </button>
+  </div>
 </div>
 
 {showForm && (
